@@ -1,0 +1,56 @@
+# Node.js
+node_modules/
+npm-debug.log
+
+# Build output
+build/
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# Dependency directories
+vendor/
+third_party/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE specific files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Compiled output
+*.dll
+*.exe
+*.exe~
+*.o
+*.obj
+*.pyc
+*.pyo
+
+# Package manager
+npm-debug.log.*
+yarn-error.log
+yarn.lock
+
+# Editor backups and settings
+*.swp
+*.swo
+*.sublime_session
+*.tm*
+
+# Miscellaneous
+*.DS_Store
