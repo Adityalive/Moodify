@@ -4,6 +4,7 @@ const router = express.Router();
 const User = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 const identifyUser = require('../middleware/auth.middleware');
+const Blacklist = require('../models/blacklist');
 // Create a new user
 router.post('/register', async (req, res) => {
     try {
@@ -75,9 +76,24 @@ router.post('/login', async (req, res) => {
         return res.status(500).json({ error: 'Internal server error' });
     }
 });
-router.get('/me', identifyUser, (req, res) => {
-    res.json(req.user).status(200).select('-password');
+router.get('/me', identifyUser, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+router.post('/logout', async (req, res) => {
+    res.clearCookie('token');
+  const newBlacklistEntry = await Blacklist.create({ 
+        token: req.cookies.token });
+    return res.status(200).json({ message: 'Logout successful' });
 });
 
 module.exports = router;
-

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const Blacklist = require('../models/blacklist');
 
 const identifyUser = (req, res, next) => {
     const tokenFromCookie = req.cookies?.token;
@@ -6,7 +7,10 @@ const identifyUser = (req, res, next) => {
         ? req.headers.authorization.split(' ')[1]
         : null;
     const token = tokenFromCookie || tokenFromHeader;
-
+        const blacklistedToken = Blacklist.findOne({ token });
+    if (blacklistedToken) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     if (!token) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
