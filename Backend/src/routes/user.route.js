@@ -5,6 +5,7 @@ const User = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 const identifyUser = require('../middleware/auth.middleware');
 const Blacklist = require('../models/blacklist');
+const redis = require('../db/redis');
 // Create a new user
 router.post('/register', async (req, res) => {
     try {
@@ -90,9 +91,10 @@ router.get('/me', identifyUser, async (req, res) => {
     }
 });
 router.post('/logout', async (req, res) => {
+    const token =req.cookies.token;
     res.clearCookie('token');
-  const newBlacklistEntry = await Blacklist.create({ 
-        token: req.cookies.token });
+  await redis.set(token, 'blacklisted', 'EX', 60 * 60 * 24); // Blacklist token for 24 hours
+
     return res.status(200).json({ message: 'Logout successful done ' });
 });
 
