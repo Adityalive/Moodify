@@ -1,12 +1,12 @@
 import { useState } from "react";
-
+import { useAuth } from "../hook/useAuth";
 const Register = () => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
-
+const {handleRegister} = useAuth();
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -14,6 +14,7 @@ const Register = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    handleRegister(formData);
     console.log("Register Data:", formData);
   };
 
