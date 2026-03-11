@@ -1,11 +1,11 @@
-import React from 'react'
-import FaceExpression from './features/Expression/components/Expression'
+import AppRoutes from "./App.routes";
+
 const App = () => {
   return (
     <div>
-      <FaceExpression />
+      <AppRoutes />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
