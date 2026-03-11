@@ -11,11 +11,11 @@ const identifyUser = async (req, res, next) => {
     if (blacklistedToken) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
-    if (!token) {
+     if (!token) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    try {
+     try {
         const decoded = jwt.verify(token, process.env.secretkey);
         req.user = decoded;
         next();
