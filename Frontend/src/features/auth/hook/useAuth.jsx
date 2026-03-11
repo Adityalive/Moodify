@@ -1,3 +1,4 @@
+
 import { AuthContext } from "../AuthContext";
 import { useContext } from "react";
 import { registerUser, loginUser, getUser, logoutUser } from "../services/Authapi";
@@ -13,8 +14,9 @@ export const useAuth = () => {
   async function handleRegister({ username, email, password }) {
     setLoading(true);
     try {
-      const data = await registerUser({ username, email, password });
-      setUser(data.user);
+      await registerUser({ username, email, password });
+      const data = await getUser();
+      setUser(data);
       return data;
     } finally {
       setLoading(false);
@@ -24,8 +26,9 @@ export const useAuth = () => {
   async function handleLogin({ email, password }) {
     setLoading(true);
     try {
-      const data = await loginUser({ email, password });
-      setUser(data.user);
+      await loginUser({ email, password });
+      const data = await getUser();
+      setUser(data);
       return data;
     } finally {
       setLoading(false);
@@ -47,13 +50,13 @@ export const useAuth = () => {
     setLoading(true);
     try {
       const data = await getUser();
-      setUser(data.user);
+      setUser(data);
       return data;
     } finally {
       setLoading(false);
     }
   }
-
+  
   return {
     user,
     loading,
@@ -63,3 +66,4 @@ export const useAuth = () => {
     handleGetUser,
   };
 };
+

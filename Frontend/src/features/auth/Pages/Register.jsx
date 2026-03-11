@@ -1,21 +1,29 @@
 import { useState } from "react";
 import { useAuth } from "../hook/useAuth";
+import { useNavigate } from "react-router-dom";
+
 const Register = () => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
-const {handleRegister} = useAuth();
+  const { handleRegister } = useAuth();
+  const navigate = useNavigate();
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    handleRegister(formData);
-    console.log("Register Data:", formData);
+    try {
+      await handleRegister(formData);
+      navigate("/home");
+    } catch (error) {
+      console.error("Register failed:", error);
+    }
   };
 
   return (
