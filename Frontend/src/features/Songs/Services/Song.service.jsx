@@ -4,7 +4,7 @@ const api=axios.create({
     withCredentials:true
 })
 
-export async function getSongs(){
-    const response=await api.get("/getsongs");
+export async function getSongs({mood}){
+    const response=await api.get("/getsongs?mood"+mood);
     return response.data;
 }

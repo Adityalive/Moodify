@@ -1,39 +1,67 @@
-export async function init({ landmarkerRef, videoRef, streamRef }) {
-  if (!videoRef?.current) return;
+import {
+    FaceLandmarker,
+    FilesetResolver
+} from "@mediapipe/tasks-vision";
 
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: false,
-    });
 
-    streamRef.current = stream;
-    videoRef.current.srcObject = stream;
+export const init = async ({ landmarkerRef, videoRef, streamRef }) => {
+    const vision = await FilesetResolver.forVisionTasks(
+        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+    );
+
+    landmarkerRef.current = await FaceLandmarker.createFromOptions(
+        vision,
+        {
+            baseOptions: {
+                modelAssetPath:
+                    "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task"
+            },
+            outputFaceBlendshapes: true,
+            runningMode: "VIDEO",
+            numFaces: 1
+        }
+    );
+
+    streamRef.current = await navigator.mediaDevices.getUserMedia({ video: true });
+    videoRef.current.srcObject = streamRef.current;
     await videoRef.current.play();
+};
 
-    // Placeholder for a future face-landmarker instance.
-    landmarkerRef.current = null;
-  } catch (error) {
-    console.error("Camera initialization failed:", error);
-  }
-}
+export const detect = ({ landmarkerRef, videoRef, setExpression }) => {
+    if (!landmarkerRef.current || !videoRef.current) return;
 
-export async function detect({ landmarkerRef, videoRef, setExpression }) {
-  if (!videoRef?.current?.srcObject) {
-    setExpression("Camera is not ready.");
-    return;
-  }
+    const results = landmarkerRef.current.detectForVideo(
+        videoRef.current,
+        performance.now()
+    );
 
-  if (!landmarkerRef?.current) {
-    setExpression("Face model not loaded yet.");
-    return;
-  }
+    if (results.faceBlendshapes?.length > 0) {
+        const blendshapes = results.faceBlendshapes[ 0 ].categories;
 
-  try {
-    // Replace with real landmarker inference when model setup is added.
-    setExpression("Detection completed.");
-  } catch (error) {
-    console.error("Detection failed:", error);
-    setExpression("Detection failed.");
-  }
-}
+        const getScore = (name) =>
+            blendshapes.find((b) => b.categoryName === name)?.score || 0;
+
+        const smileLeft = getScore("mouthSmileLeft");
+        const smileRight = getScore("mouthSmileRight");
+        const jawOpen = getScore("jawOpen");
+        const browUp = getScore("browInnerUp");
+        const frownLeft = getScore("mouthFrownLeft");
+        const frownRight = getScore("mouthFrownRight");
+
+        console.log(getScore("mouthFrownLeft"))
+
+        let currentExpression = "Neutral";
+
+        if (smileLeft > 0.5 && smileRight > 0.5) {
+            currentExpression = "happy";
+        } else if (jawOpen > 0.2 && browUp > 0.2) {
+            currentExpression = "surprised";
+        } else if (frownLeft > 0.0001 && frownRight > 0.0001) {
+            currentExpression = "sad";
+        }
+
+        setExpression(currentExpression);
+
+        return currentExpression
+    }
+};

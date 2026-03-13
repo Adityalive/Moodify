@@ -8,15 +8,15 @@ export const useSongs = () => {
     if(!context){
         throw new Error("useSongs must be used within a SongsProvider");
     }
-     async function getSongs(){
+     async function handleSongs({mood}){
          setLoading(true)
          try{
-             const data=await getSongs()
+             const data=await getSongs({mood })
              setSongs(data.songs)
              return data
          }finally{
              setLoading(false)
          }
      } 
-       return {songs ,loading, getSongs} 
+       return {songs ,loading, handleSongs} 
 }
