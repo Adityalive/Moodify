@@ -41,7 +41,7 @@ async function getSong(req, res) {
 
     const { mood } = req.query
 
-    const song = await songModel.findOne({
+    const song = await songModel.find({
         mood,
     })
 
