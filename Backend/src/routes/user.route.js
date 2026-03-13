@@ -6,6 +6,12 @@ const bcrypt = require('bcryptjs');
 const identifyUser = require('../middleware/auth.middleware');
 const Blacklist = require('../models/blacklist');
 const redis = require('../db/redis');
+
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+};
 // Create a new user
 router.post('/register', async (req, res) => {
     try {
@@ -34,10 +40,7 @@ router.post('/register', async (req, res) => {
             process.env.secretkey
         );
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true
-        });
+        res.cookie('token', token, cookieOptions);
 
         return res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
@@ -67,10 +70,7 @@ router.post('/login', async (req, res) => {
             process.env.secretkey
         );
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true
-        });
+        res.cookie('token', token, cookieOptions);
 
         return res.status(200).json({ message: 'Login successful' });
     } catch (error) {
@@ -92,7 +92,7 @@ router.get('/me', identifyUser, async (req, res) => {
 });
 router.post('/logout', async (req, res) => {
     const token =req.cookies.token;
-    res.clearCookie('token');
+    res.clearCookie('token', cookieOptions);
   await redis.set(token, 'blacklisted', 'EX', 60 * 60 * 24); // Blacklist token for 24 hours
 
     return res.status(200).json({ message: 'Logout successful done ' });

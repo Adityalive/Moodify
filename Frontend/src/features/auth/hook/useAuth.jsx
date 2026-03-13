@@ -52,6 +52,9 @@ export const useAuth = () => {
       const data = await getUser();
       setUser(data);
       return data;
+    } catch (error) {
+      setUser(null);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -66,4 +69,3 @@ export const useAuth = () => {
     handleGetUser,
   };
 };
-

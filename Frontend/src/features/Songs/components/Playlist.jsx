@@ -1,207 +1,133 @@
-const sectionStyle = {
-  width: "100%",
-};
-
-const panelStyle = {
-  borderRadius: "28px",
-  padding: "24px",
-  background: "linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.94))",
-  boxShadow: "0 30px 80px rgba(15, 23, 42, 0.3)",
-  border: "1px solid rgba(148, 163, 184, 0.16)",
-  color: "#f8fafc",
-};
-
-const badgeStyle = {
-  display: "inline-flex",
-  alignItems: "center",
-  gap: "8px",
-  padding: "8px 14px",
-  borderRadius: "999px",
-  background: "rgba(251, 191, 36, 0.12)",
-  border: "1px solid rgba(251, 191, 36, 0.24)",
-  color: "#fde68a",
-  fontSize: "0.85rem",
-  fontWeight: 700,
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
-};
-
-const statusCardStyle = {
-  borderRadius: "22px",
-  padding: "24px",
-  background: "rgba(15, 23, 42, 0.54)",
-  border: "1px solid rgba(148, 163, 184, 0.14)",
-};
-
-const gridStyle = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-  gap: "18px",
-  marginTop: "24px",
-};
-
-const cardStyle = {
-  borderRadius: "22px",
-  padding: "20px",
-  background: "linear-gradient(180deg, rgba(30, 41, 59, 0.94), rgba(15, 23, 42, 0.96))",
-  border: "1px solid rgba(125, 211, 252, 0.14)",
-  boxShadow: "0 18px 40px rgba(2, 6, 23, 0.28)",
-};
-
-const metaLabelStyle = {
-  fontSize: "0.76rem",
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
-  color: "#93c5fd",
-};
+import React from "react";
 
 const Playlist = ({ playlistType, songs = [], loading = false }) => {
   const hasPlaylist = Boolean(playlistType);
   const hasSongs = songs.length > 0;
   const title = hasPlaylist ? `${playlistType} Playlist` : "Playlist Preview";
+  
   const helperText = !hasPlaylist
     ? "Detect an expression above to generate a playlist."
     : loading
-      ? `Looking for songs that match "${playlistType}".`
-      : hasSongs
-        ? `${songs.length} song${songs.length === 1 ? "" : "s"} found for this mood.`
-        : `No songs were returned for "${playlistType}" yet.`;
+    ? `Looking for songs that match "${playlistType}".`
+    : hasSongs
+    ? `${songs.length} song${songs.length === 1 ? "" : "s"} found for this mood.`
+    : `No songs were returned for "${playlistType}" yet.`;
 
   return (
-    <section style={sectionStyle}>
-      <div style={panelStyle}>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-            gap: "16px",
-            alignItems: "flex-start",
-          }}
-        >
-          <div>
-            <span style={badgeStyle}>Mood Playlist</span>
-            <h2
-              style={{
-                margin: "16px 0 10px",
-                fontSize: "clamp(1.8rem, 3vw, 2.7rem)",
-                lineHeight: 1.05,
-              }}
-            >
+    <section className="w-full h-full flex flex-col text-gray-200">
+      <div className="w-full">
+        {/* Header Section */}
+        <div className="flex flex-wrap justify-between gap-4 items-start mb-6">
+          
+          {/* Title & Badge */}
+          <div className="flex-1 min-w-[240px]">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-800 border border-gray-700 text-amber-400 text-[10px] font-bold tracking-widest uppercase">
+              Mood Playlist
+            </span>
+            <h2 className="mt-3 mb-1 text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
               {title}
             </h2>
-            <p
-              style={{
-                margin: 0,
-                maxWidth: "640px",
-                color: "rgba(226, 232, 240, 0.82)",
-                fontSize: "1rem",
-                lineHeight: 1.6,
-              }}
-            >
+            <p className="text-gray-400 text-sm md:text-base leading-relaxed max-w-2xl">
               {helperText}
             </p>
           </div>
 
-          <div
-            style={{
-              minWidth: "220px",
-              ...statusCardStyle,
-            }}
-          >
-            <div style={metaLabelStyle}>Status</div>
-            <div
-              style={{
-                marginTop: "10px",
-                fontSize: "1.15rem",
-                fontWeight: 700,
-                color: loading ? "#fde68a" : hasSongs ? "#86efac" : "#fca5a5",
-              }}
+          {/* Status Card */}
+          <div className="min-w-[180px] rounded-xl p-4 bg-gray-800 border border-gray-700 shadow-sm">
+            <div className="text-[10px] font-bold tracking-widest uppercase text-sky-400">
+              Status
+            </div>
+            <div className={`mt-1 text-lg font-bold ${
+                loading ? "text-amber-400" : hasSongs ? "text-emerald-400" : "text-rose-400"
+              }`}
             >
               {loading
-                ? "Fetching songs..."
+                ? "Fetching..."
                 : hasSongs
-                  ? "Songs received"
-                  : hasPlaylist
-                    ? "No songs found"
-                    : "Waiting for mood"}
+                ? "Songs received"
+                : hasPlaylist
+                ? "No songs found"
+                : "Waiting..."}
             </div>
-            <div
-              style={{
-                marginTop: "12px",
-                color: "rgba(226, 232, 240, 0.72)",
-                fontSize: "0.95rem",
-                lineHeight: 1.5,
-              }}
-            >
-              {hasPlaylist ? `Current mood: ${playlistType}` : "No expression selected yet."}
+            <div className="mt-1 text-xs text-gray-400">
+              {hasPlaylist ? `Mood: ${playlistType}` : "No expression yet."}
             </div>
           </div>
         </div>
 
+        {/* Content Section */}
         {!hasSongs ? (
-          <div
-            style={{
-              marginTop: "24px",
-              ...statusCardStyle,
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: "1.1rem", fontWeight: 700 }}>
+          /* Empty / Loading State */
+          <div className="mt-6 rounded-xl p-6 bg-gray-800 border border-gray-700 text-center shadow-sm">
+            <div className="text-base font-bold text-gray-100">
               {loading ? "Checking your playlist..." : "No songs to show yet"}
             </div>
-            <p
-              style={{
-                margin: "10px 0 0",
-                color: "rgba(226, 232, 240, 0.75)",
-                lineHeight: 1.6,
-              }}
-            >
+            <p className="mt-2 text-sm text-gray-400 max-w-md mx-auto">
               {hasPlaylist
                 ? "If the backend returns songs, they will appear here one by one."
-                : "Use the camera detector above, then this section will show the songs that came back from getSongs."}
+                : "Use the camera detector to scan your mood, and your curated tracks will appear here."}
             </p>
           </div>
         ) : (
-          <div style={gridStyle}>
+          /* Songs Grid - Reduced minmax size to 200px and gap to 4 */
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 mt-6">
             {songs.map((song, index) => (
               <article
                 key={song._id || song.id || song.name || song.title || index}
-                style={cardStyle}
+                className="group rounded-xl overflow-hidden bg-gray-800 border border-gray-700 shadow-sm hover:bg-gray-750 hover:-translate-y-1 hover:shadow-md hover:border-gray-500 transition-all duration-200 flex flex-col"
               >
-                <div style={metaLabelStyle}>Song {index + 1}</div>
-                <h3
-                  style={{
-                    margin: "14px 0 10px",
-                    fontSize: "1.3rem",
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {song.name || song.title || "Untitled song"}
-                </h3>
-                <p
-                  style={{
-                    margin: 0,
-                    color: "#cbd5e1",
-                    fontSize: "0.98rem",
-                  }}
-                >
-                  {song.artist || song.singer || "Unknown artist"}
-                </p>
-                <div
-                  style={{
-                    marginTop: "18px",
-                    paddingTop: "14px",
-                    borderTop: "1px solid rgba(148, 163, 184, 0.14)",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: "12px",
-                    color: "rgba(226, 232, 240, 0.72)",
-                    fontSize: "0.9rem",
-                  }}
-                >
-                  <span>{playlistType}</span>
-                  <span>{song.album || song.movie || "Single"}</span>
+                {/* Poster Image */}
+                <div className="aspect-[16/10] bg-gray-900 relative overflow-hidden border-b border-gray-700">
+                  {song.posterUrl ? (
+                    <img
+                      src={song.posterUrl}
+                      alt={song.title || "Song poster"}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-600 text-xs">
+                      No poster
+                    </div>
+                  )}
+                </div>
+
+                {/* Card Body - Tighter padding */}
+                <div className="p-4 flex flex-col flex-grow">
+                  <div className="text-[10px] font-bold tracking-widest uppercase text-sky-400">
+                    Track {index + 1}
+                  </div>
+                  <h3 className="mt-1 mb-1 text-lg font-bold text-gray-100 leading-tight line-clamp-1">
+                    {song.title || song.name || "Untitled"}
+                  </h3>
+                  <p className="text-xs text-gray-400 mb-3">
+                    Mood: <span className="capitalize">{song.mood || playlistType}</span>
+                  </p>
+
+                  {/* Audio Player */}
+                  <div className="mt-auto">
+                    {song.url ? (
+                      <audio
+                        controls
+                        preload="none"
+                        src={song.url}
+                        className="w-full rounded outline-none h-8 scale-95 origin-left"
+                      >
+                        Your browser does not support the audio player.
+                      </audio>
+                    ) : (
+                      <div className="py-1.5 px-3 rounded-lg bg-gray-900 border border-gray-700 text-rose-400 text-xs text-center">
+                        Audio missing
+                      </div>
+                    )}
+
+                    {/* Footer Meta */}
+                    <div className="mt-3 pt-3 border-t border-gray-700 flex justify-between items-center text-[10px] text-gray-500 font-medium">
+                      <span className="capitalize">{playlistType}</span>
+                      <span className={song.url ? "text-emerald-500" : "text-rose-500"}>
+                        {song.url ? "Playable" : "No audio"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </article>
             ))}

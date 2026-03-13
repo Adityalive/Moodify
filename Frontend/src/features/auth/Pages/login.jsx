@@ -7,21 +7,32 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
   const { handleLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+    setErrorMessage("");
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
-      await handleLogin(formData);
+      setErrorMessage("");
+      await handleLogin({
+        email: formData.email.trim(),
+        password: formData.password,
+      });
       navigate("/home");
     } catch (error) {
       console.error("Login failed:", error);
+      setErrorMessage(
+        error?.response?.data?.error ||
+          "Login failed. Check your email and password."
+      );
     }
   };
 
@@ -32,6 +43,12 @@ const Login = () => {
         <p className="mb-6 text-sm text-slate-400">Welcome back</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {errorMessage ? (
+            <div className="rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-2 text-sm text-red-200">
+              {errorMessage}
+            </div>
+          ) : null}
+
           <div>
             <label className="mb-1 block text-sm text-slate-300" htmlFor="email">
               Email
