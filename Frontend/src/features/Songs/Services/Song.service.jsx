@@ -1,10 +1,10 @@
 import axios from "axios";
-const api=axios.create({
-    baseURL:"http://localhost:3000/api/songs",
-    withCredentials:true
-})
+const api = axios.create({
+  baseURL: "http://localhost:3000/api/songs",
+  withCredentials: true,
+});
 
-export async function getSongs({mood}){
-    const response=await api.get("/getsongs?mood"+mood);
-    return response.data;
+export async function getSongs({ mood }) {
+  const response = await api.get(`/getsongs?mood=${encodeURIComponent(mood)}`);
+  return response.data;
 }

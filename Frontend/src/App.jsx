@@ -1,13 +1,13 @@
 import AppRoutes from "./App.routes";
 import { AuthProvider } from "./features/auth/AuthContext";
-import { SongsContext } from "./features/Songs/SongsContext from "./features/Songs/SongContext";
+import { SongsProvider } from "./features/Songs/SongContext";
 const App = () => {
   return (
     <div>      
       <AuthProvider>
-        <SongsContext>
+        <SongsProvider>
            <AppRoutes />
-        </SongsContext>
+        </SongsProvider>
       </AuthProvider>
      
     </div>

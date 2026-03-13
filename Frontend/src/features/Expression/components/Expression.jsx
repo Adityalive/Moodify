@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { detect, init } from "../utils/utils";
 
-export default function FaceExpression({ onClick = () => { } }) {
+export default function FaceExpression({
+  onClick = () => {},
+  compact = false,
+}) {
   const videoRef = useRef(null);
   const landmarkerRef = useRef(null);
   const streamRef = useRef(null);
@@ -55,37 +58,26 @@ export default function FaceExpression({ onClick = () => { } }) {
   }
 
   return (
-    <section
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px",
-        background:
-          "radial-gradient(circle at top, #fde68a 0%, #fb7185 35%, #0f172a 100%)",
-      }}
-    >
+    <section style={{ width: "100%" }}>
       <div
         style={{
-          width: "min(100%, 960px)",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: "24px",
-          padding: "28px",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "18px",
+          padding: compact ? "22px" : "28px",
           borderRadius: "28px",
-          background: "rgba(15, 23, 42, 0.86)",
+          background: "rgba(15, 23, 42, 0.9)",
           boxShadow: "0 24px 80px rgba(15, 23, 42, 0.35)",
-          backdropFilter: "blur(14px)",
+          border: "1px solid rgba(148, 163, 184, 0.16)",
+          color: "#f8fafc",
         }}
       >
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
             gap: "16px",
-            color: "#f8fafc",
           }}
         >
           <span
@@ -105,11 +97,11 @@ export default function FaceExpression({ onClick = () => { } }) {
           <h1
             style={{
               margin: 0,
-              fontSize: "clamp(2rem, 4vw, 3.6rem)",
-              lineHeight: 1,
+              fontSize: compact ? "clamp(1.65rem, 3vw, 2.3rem)" : "clamp(2rem, 4vw, 3.6rem)",
+              lineHeight: 1.05,
             }}
           >
-            Detect your expression in one tap
+            Detect your expression
           </h1>
           <p
             style={{
@@ -119,68 +111,44 @@ export default function FaceExpression({ onClick = () => { } }) {
               lineHeight: 1.6,
             }}
           >
-            Let the camera read your face, then use that mood to drive the next
-            playlist or recommendation flow.
+            Check your face here, then use that mood to load matching songs.
           </p>
+        </div>
+
+        <div
+          style={{
+            padding: "18px 20px",
+            borderRadius: "18px",
+            background: "rgba(255, 255, 255, 0.08)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+          }}
+        >
           <div
             style={{
-              padding: "18px 20px",
-              borderRadius: "18px",
-              background: "rgba(255, 255, 255, 0.08)",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
+              marginBottom: "8px",
+              color: "#93c5fd",
+              fontSize: "0.85rem",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
             }}
           >
-            <div
-              style={{
-                marginBottom: "8px",
-                color: "#93c5fd",
-                fontSize: "0.85rem",
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-              }}
-            >
-              Current status
-            </div>
-            <div
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: 700,
-                color: "#f8fafc",
-              }}
-            >
-              {expression}
-            </div>
+            Current status
           </div>
-          <button
-            onClick={handleClick}
-            disabled={!isReady || isDetecting}
+          <div
             style={{
-              width: "fit-content",
-              padding: "14px 24px",
-              border: "none",
-              borderRadius: "999px",
-              background: isReady
-                ? "linear-gradient(135deg, #f59e0b, #fb7185)"
-                : "rgba(148, 163, 184, 0.35)",
-              color: "#0f172a",
-              fontSize: "1rem",
-              fontWeight: 800,
-              letterSpacing: "0.01em",
-              cursor: !isReady || isDetecting ? "not-allowed" : "pointer",
-              boxShadow: isReady
-                ? "0 14px 30px rgba(251, 113, 133, 0.28)"
-                : "none",
-              transition: "transform 180ms ease, box-shadow 180ms ease",
+              fontSize: "1.15rem",
+              fontWeight: 700,
+              color: "#f8fafc",
             }}
           >
-            {isDetecting ? "Detecting..." : "Detect Expression"}
-          </button>
+            {expression}
+          </div>
         </div>
 
         <div
           style={{
             position: "relative",
-            minHeight: "320px",
+            minHeight: compact ? "260px" : "320px",
             padding: "14px",
             borderRadius: "28px",
             background: "linear-gradient(180deg, #1e293b, #020617)",
@@ -192,7 +160,7 @@ export default function FaceExpression({ onClick = () => { } }) {
             style={{
               width: "100%",
               height: "100%",
-              minHeight: "320px",
+              minHeight: compact ? "260px" : "320px",
               objectFit: "cover",
               borderRadius: "20px",
               backgroundColor: "#020617",
@@ -222,6 +190,29 @@ export default function FaceExpression({ onClick = () => { } }) {
             <span>{isReady ? "Live Preview" : "Please wait"}</span>
           </div>
         </div>
+
+        <button
+          onClick={handleClick}
+          disabled={!isReady || isDetecting}
+          style={{
+            width: "100%",
+            padding: "14px 24px",
+            border: "none",
+            borderRadius: "999px",
+            background: isReady
+              ? "linear-gradient(135deg, #f59e0b, #fb7185)"
+              : "rgba(148, 163, 184, 0.35)",
+            color: "#0f172a",
+            fontSize: "1rem",
+            fontWeight: 800,
+            letterSpacing: "0.01em",
+            cursor: !isReady || isDetecting ? "not-allowed" : "pointer",
+            boxShadow: isReady ? "0 14px 30px rgba(251, 113, 133, 0.28)" : "none",
+            transition: "transform 180ms ease, box-shadow 180ms ease",
+          }}
+        >
+          {isDetecting ? "Detecting..." : "Detect Expression"}
+        </button>
       </div>
     </section>
   );

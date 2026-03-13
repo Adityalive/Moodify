@@ -1,17 +1,26 @@
+import { createContext, useState } from "react";
 
-import {createContext} from 'react'
-import { useState } from 'react'
-export const SongsContext=createContext()
-export async function SongsContext({children}){
-   
-    const [songs,setSongs]=useState([])
-    const [loading,setLoading]=useState(true)
-    return(
-        <SongsContext.Provider vzlue={{songs,setSongs,loading,setLoading}}>
-            {
-                children
-            }
-        </SongsContext.Provider>
-    )
+export const SongsContext = createContext(null);
+
+export function SongsProvider({ children }) {
+  const [songs, setSongs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [playlistType, setPlaylistType] = useState("");
+
+  return (
+    <SongsContext.Provider
+      value={{
+        songs,
+        setSongs,
+        loading,
+        setLoading,
+        playlistType,
+        setPlaylistType,
+      }}
+    >
+      {children}
+    </SongsContext.Provider>
+  );
 }
-export default SongsContext
+
+export default SongsContext;
