@@ -10,7 +10,8 @@ const redis = require('../db/redis');
 const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
 };
 // Create a new user
 router.post('/register', async (req, res) => {
@@ -37,7 +38,8 @@ router.post('/register', async (req, res) => {
                 username: newUser.username,
                 email: newUser.email
             },
-            process.env.secretkey
+            process.env.secretkey,
+            { expiresIn: '7d' }
         );
 
         res.cookie('token', token, cookieOptions);
@@ -67,7 +69,8 @@ router.post('/login', async (req, res) => {
                 username: user.username,
                 email: user.email
             },
-            process.env.secretkey
+            process.env.secretkey,
+            { expiresIn: '7d' }
         );
 
         res.cookie('token', token, cookieOptions);
