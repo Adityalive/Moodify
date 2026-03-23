@@ -16,11 +16,25 @@ export const useSongs = () => {
     setLoading,
     playlistType,
     setPlaylistType,
+    currentIndex,
+    setCurrentIndex,
+    currentSong,
+    library,
+    saveSong,
+    removeSong,
+    isPlaying,
+    currentTime,
+    duration,
+    togglePlayPause,
+    seek,
+    goNext,
+    goPrev,
   } = context;
 
   async function handleSongs({ mood }) {
     setLoading(true);
     setPlaylistType(mood);
+    setCurrentIndex(0);
 
     try {
       const data = await getSongs({ mood });
@@ -32,7 +46,25 @@ export const useSongs = () => {
     }
   }
 
-  return { songs, loading, playlistType, handleSongs };
+  return {
+    songs,
+    loading,
+    playlistType,
+    handleSongs,
+    currentIndex,
+    setCurrentIndex,
+    currentSong,
+    library,
+    saveSong,
+    removeSong,
+    isPlaying,
+    currentTime,
+    duration,
+    togglePlayPause,
+    seek,
+    goNext,
+    goPrev,
+  };
 };
 
 export default useSongs;
